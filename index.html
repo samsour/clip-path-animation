@@ -1,28 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
+
 <body>
     <main>
-        <div class="text">
-            <section class="final">
-                <div>OnePlus<br>Nord</div>
-            </section>
-            <section class="light">
-                <div>OnePlus<br>Nord</div>
-            </section>
-            <section class="dark">
-                <div>OnePlus<br>Nord</div>
-            </section>
-        </div>
+        <section class="text-section">
+            <div class="text light">
+                <div>Fancy Headline</div>
+            </div>
+            <div class="text dark animate-dark-to-light">
+                <div>Fancy Headline</div>
+            </div>
+        </section>
 
-        <div class="phone">
-            <img src="phone.webp" alt="phone">
-        </div>
+        <section class="sticky-scroller" data-scroller>
+            <div class="sticky">
+                <div class="text light absolute" data-scroll-shrink>qwer</div>
+                <div class="text dark">qwer</div>
+            </div>
+            <div class="text"></div>
+        </section>
+
+        <section>
+            <div class="text light">
+                Another section
+            </div>
+        </section>
     </main>
+
+    <script>;
+
+        var observer = new IntersectionObserver(callback, {
+            rootMargin: '0px',
+            threshold: 1.0
+        });
+
+        var container = document.querySelector('.sticky-scroller');
+        var target = document.querySelector('[data-scroll-shrink]');
+        observer.observe(target);
+
+        function callback(entries, observer) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    window.addEventListener('scroll', onScroll);
+                } else {
+                    // window.removeEventListener('scroll', onScroll);
+                }
+            });
+        };
+
+        var lastScrollY = 0;
+        var ticking = false;
+
+        var update = function() {
+            // do your stuff
+            var bounds = container.getBoundingClientRect();
+            var percentage = Math.abs(bounds.y) * 100 / bounds.height*2;
+            var clipPath = "inset(0 0 " + percentage + "% 0)";
+            target.style.clipPath = clipPath;
+            ticking = false;
+        };
+
+        var requestTick = function() {
+            if (!ticking) {
+            window.requestAnimationFrame(update);
+            ticking = true;
+            }
+        };
+
+        var onScroll = function() {
+            lastScrollY = window.scrollY;
+            requestTick();
+        };
+    </script>
 </body>
+
 </html>
